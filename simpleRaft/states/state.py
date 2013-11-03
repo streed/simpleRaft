@@ -1,5 +1,9 @@
+from ..messages.response import ResponseMessage
 
 class State( object ):
+
+	def set_server( self, server ):
+		self._server = server
 
 	def on_message( self, message ):
 		"""
@@ -33,3 +37,11 @@ class State( object ):
 		"""
 			This is called when there is a client request.
 		"""
+
+	def _nextTimeout( self ):
+		self._currentTime = time.time()
+		return self._currentTime + random.randrange( self._timeout, 2 * self._timeout )
+
+	def _send_response_message( self, msg, yes=True ):
+		response = ResponseMessage( self._server._name, msg.sender, msg.term, { "response": yes } )
+		self._server.send_message_response( response )
