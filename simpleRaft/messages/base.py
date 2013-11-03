@@ -1,7 +1,10 @@
 import time
 
 class BaseMessage( object ):
-	AppendEntries = 0
+	AppendEntries 		= 0
+	RequestVote		= 1
+	RequestVoteResponse 	= 2
+	Response		= 3
 
 	def __init__( self, sender, receiver, term, data ):
 		self._timestamp = int( time.time() )

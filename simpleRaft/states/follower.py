@@ -3,6 +3,8 @@ import random
 
 from .state import State
 from ..messages.base import BaseMessage
+from ..messages.response import ResponseMessage
+from ..messages.request_vote import RequestVoteResponseMessage
 
 class Follower( State ):
 
@@ -35,29 +37,48 @@ class Follower( State ):
 
 		if( message.term < self._server._currentTerm ):
 			self._send_response_message( message, yes=False )
-			return follow, None
+			return self, None
 		
-
 		if( message.data != {} ): 
 			log = self._server._log
 			data = message.data
-			if( len( log ) < data["prevLogIndex"] )
-				self._send_response_message( message, yes=False )
-				return self, None
 
-			elif( log[data["prevLogIndex"]] != None ):
-				self._send_response_message( message, yes=False )
-				return self, None
-
-			elif( log[data["prevLogIndex"]] != data["prevLogTerm"] ):
-				log = log[:data["prevLogIndex"]]
-				self._send_response_message( message )
-				return self, None
-			else:
-				log.append( data["logTerm"] )
-
+			#Check if the leader is too far ahead in the log.
 			if( data["leaderCommitIndex"] > self._server._commitIndex ):
-				self._server._commitIndex = min( data["leaderCommitIndex"], len( log ) )
+				#If the leader is too far ahead then we use the length of the log - 1
+				self._server._commitIndex = min( data["leaderCommitIndex"], len( log ) - 1 )
+
+			if( "prevLogIndex" in data and len( log ) < data["prevLogIndex"] ):
+				self._send_response_message( message, yes=False )
+				return self, None
+
+			#We need to hold the induction proof of the algorithm here.
+			#So, we make sure that the prevLogIndex term is always
+			#equal to the server.
+			if( "prevLogIndex" in data and log[data["prevLogIndex"]] != data["prevLogTerm"] ):
+				log = log[:data["prevLogIndex"] + 1]
+				log[data["prevLogIndex"]] = data["prevLogTerm"]
+				self._send_response_message( message )
+				self._server._log = log
+				return self, None
+			#The induction proof held so lets check if the commitIndex 
+			#value is the same as the one on the leader
+			else:
+				#Make sure that leaderCommitIndex is > 0 and that the data is different here
+				if( data["leaderCommitIndex"] > 0 and log[data["leaderCommitIndex"]] != data["commitValue"] ):	
+					#Data was found to be different so we fix that
+					#By taking the current log and slicing it to the leaderCommitIndex + 1 range
+					#Then setting the last value to the commitValue
+					log = log[:data["leaderCommitIndex"] + 1]
+					log[data["leaderCommitIndex"]] = data["commitValue"]
+					self._send_response_message( message )
+					self._server._log = log
+				else:
+					#The commit index is not out of the range of the log
+					#So we can just append it to the log now.
+					#commitIndex = len( log )
+					log.append( data["commitValue"] )
+					self._server._commitIndex += 1
 
 
 			self._send_response_message( message )
@@ -67,17 +88,19 @@ class Follower( State ):
 
 	def on_vote_request( self, message ):
 
-		if( self._lst_vote == None ):
+		if( self._last_vote == None ):
 			self._last_vote = message.sender
 			self._send_vote_response_message( message )
 		else:
 			self._send_vote_response_message( message, yes=False )
 
-	def _send_response_message( self, msg, yes=True )
-		response = ResponseMessage( self._name, msg.sender, msg.term, { "response": yes } )
+		return self, None
+
+	def _send_response_message( self, msg, yes=True ):
+		response = ResponseMessage( self._server._name, msg.sender, msg.term, { "response": yes } )
 		self._server.send_message_response( response )
 
 	def _send_vote_response_message( self, msg, yes=True ):
-		voteResponse = VoteResponseMessage( self._name, message.sender, message.term, { "response": yes } )
+		voteResponse = RequestVoteResponseMessage( self._server._name, msg.sender, msg.term, { "response": yes } )
 		self._server.send_message_response( voteResponse )
 

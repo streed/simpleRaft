@@ -19,8 +19,9 @@ class Server( object ):
 			n.post_message( message )
 
 	def send_message_response( self, message ):
-		n = self._neighbors[self._neighbors.index( message.receiver )]
-		n.post_message( message )
+		n = [ n for n in self._neighbors if n._name == message.receiver ]
+		if( len( n ) > 0 ):
+			n[0].post_message( message )
 
 	def post_message( self, message ):
 		self._messageBoard.post_message( message )
