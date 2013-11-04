@@ -57,6 +57,7 @@ class TestFollowerServer( unittest.TestCase ):
 		self.server._log.append( { "term": 1, "value": 0 } )
 		self.server._log.append( { "term": 1, "value": 200 } )
 		self.server._log.append( { "term": 1, "value": 300 } )
+		self.server._log.append( { "term": 2, "value": 400 } )
 
 		msg = AppendEntriesMessage( 0, 1, 2, { 
 							"prevLogIndex": 0, 
