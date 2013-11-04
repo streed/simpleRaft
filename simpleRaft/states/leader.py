@@ -25,7 +25,7 @@ class Leader( State ):
 			
 			#Get the next log entry to send to the client.
 			previousIndex = max( 0, self._nextIndexes[message.sender] - 1 )
-			previous = self._server._log[prevLogIndex]
+			previous = self._server._log[previousIndex]
 			current = self._server._log[self._nextIndexes[message.sender]]
 			
 			#Send the new log to the client and wait for it to respond.
