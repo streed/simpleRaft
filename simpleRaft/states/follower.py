@@ -21,9 +21,9 @@ class Follower( Voter ):
 			data = message.data
 
 			#Check if the leader is too far ahead in the log.
-			if( data["leaderCommitIndex"] != self._server._commitIndex ):
+			if( data["leaderCommit"] != self._server._commitIndex ):
 				#If the leader is too far ahead then we use the length of the log - 1
-				self._server._commitIndex = min( data["leaderCommitIndex"], len( log ) - 1 )
+				self._server._commitIndex = min( data["leaderCommit"], len( log ) - 1 )
 
 			#Can't possibly be up-to-date with the log
 			#If the log is smaller than the preLogIndex
@@ -47,12 +47,12 @@ class Follower( Voter ):
 			#The induction proof held so lets check if the commitIndex 
 			#value is the same as the one on the leader
 			else:
-				#Make sure that leaderCommitIndex is > 0 and that the data is different here
+				#Make sure that leaderCommit is > 0 and that the data is different here
 				if( len( log ) > 0 and 
-				    data["leaderCommitIndex"] > 0 and 
-				    log[data["leaderCommitIndex"]]["term"] != message.term ):	
+				    data["leaderCommit"] > 0 and 
+				    log[data["leaderCommit"]]["term"] != message.term ):	
 					#Data was found to be different so we fix that
-					#By taking the current log and slicing it to the leaderCommitIndex + 1 range
+					#By taking the current log and slicing it to the leaderCommit + 1 range
 					#Then setting the last value to the commitValue
 					log = log[:self._server._commitIndex]
 					for e in data["entries"]:
@@ -68,14 +68,17 @@ class Follower( Voter ):
 					#The commit index is not out of the range of the log
 					#So we can just append it to the log now.
 					#commitIndex = len( log )
-					for e in data["entries"]:
-						log.append( e )
-						self._server._commitIndex += 1
+					#Is this a heartbeat?
+					if( len( data["entries"] ) > 0 ):
+						for e in data["entries"]:
+							log.append( e )
+							self._server._commitIndex += 1
 
-					self._server._lastLogIndex = len( log ) - 1
-					self._server._lastLogTerm = log[-1]["term"]
-					self._commitIndex = len( log ) - 1
-					self._server._log = log
+						self._server._lastLogIndex = len( log ) - 1
+						self._server._lastLogTerm = log[-1]["term"]
+						self._commitIndex = len( log ) - 1
+						self._server._log = log
+						self._send_response_message( message )
 
 
 			self._send_response_message( message )

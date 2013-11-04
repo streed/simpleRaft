@@ -44,7 +44,7 @@ class TestFollowerServer( unittest.TestCase ):
 		msg = AppendEntriesMessage( 0, 1, 2, { 
 							"prevLogIndex": 0, 
 							"prevLogTerm": 1, 
-							"leaderCommitIndex": 1, 
+							"leaderCommit": 1, 
 							"entries": [ { "term": 1, "value": 100 } ] } )
 
 		self.server.on_message( msg )
@@ -62,7 +62,7 @@ class TestFollowerServer( unittest.TestCase ):
 		msg = AppendEntriesMessage( 0, 1, 2, { 
 							"prevLogIndex": 0, 
 							"prevLogTerm": 1, 
-							"leaderCommitIndex": 1, 
+							"leaderCommit": 1, 
 							"entries": [ { "term": 1, "value": 100 } ] } )
 
 		self.server.on_message( msg )
@@ -74,7 +74,7 @@ class TestFollowerServer( unittest.TestCase ):
 		msg = AppendEntriesMessage( 0, 1, 2, { 
 							"prevLogIndex": 0, 
 							"prevLogTerm": 100, 
-							"leaderCommitIndex": 1, 
+							"leaderCommit": 1, 
 							"entries": [ { "term": 1, "value": 100 } ] } )
 
 		self.server.on_message( msg )

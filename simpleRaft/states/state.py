@@ -32,6 +32,8 @@ class State( object ):
 			return a
 		elif( _type == BaseMessage.RequestVoteResponse ):
 			return self.on_vote_received( message )
+		elif( _type == BaseMessage.Response ):
+			return self.on_response_received( message )
 
 	def on_leader_timeout( self, message ):
 		"""
@@ -52,6 +54,11 @@ class State( object ):
 		"""
 			This is called when there is a request to
 			append an entry to the log.
+		"""
+
+	def on_response_received( self, message ):
+		"""
+			This is called when a response is sent back to the Leader
 		"""
 
 	def on_client_command( self, message ):

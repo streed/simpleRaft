@@ -10,6 +10,8 @@ class Server( object ):
 
 		self._commitIndex = 0
 		self._currentTerm = 0
+
+		self._lastApplied = 0
 		
 		self._lastLogIndex = 0
 		self._lastLogTerm = None
