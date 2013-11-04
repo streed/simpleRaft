@@ -14,7 +14,7 @@ class TestMemoryBoard( unittest.TestCase ):
 		self.board.post_message( msg )
 		self.assertEquals( msg, self.board.get_message() )
 
-	def test_memoryboard_post_message( self ):
+	def test_memoryboard_post_message_make_sure_they_are_ordered( self ):
 
 		msg = BaseMessage( 0, 0, 0, 0 )
 		msg2 = BaseMessage( 0, 0, 0, 0 )
