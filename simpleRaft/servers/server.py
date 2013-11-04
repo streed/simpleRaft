@@ -10,6 +10,9 @@ class Server( object ):
 
 		self._commitIndex = 0
 		self._currentTerm = 0
+		
+		self._lastLogIndex = 0
+		self._lastLogValue = None
 
 		self._state.set_server( self )
 		self._messageBoard.set_owner( self )

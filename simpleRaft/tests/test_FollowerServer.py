@@ -84,3 +84,4 @@ class TestFollowerServer( unittest.TestCase ):
 		self.server.on_message( msg )
 
 		self.assertEquals( 0, self.server._state._last_vote )
+
