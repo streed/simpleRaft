@@ -16,6 +16,7 @@ class Server( object ):
 
 	def send_message( self, message ):
 		for n in self._neighbors:
+			message._receiver = n._name
 			n.post_message( message )
 
 	def send_message_response( self, message ):

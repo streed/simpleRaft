@@ -1,3 +1,7 @@
+import time
+import random
+
+from ..messages.base import BaseMessage
 from ..messages.response import ResponseMessage
 
 class State( object ):
@@ -11,6 +15,15 @@ class State( object ):
 			and calls one of the other corrosponding methods
 			that this state reacts to.
 		"""	
+		_type = message.type
+
+		if( message.term > self._server._currentTerm ):
+			self._server._currentTerm = message.term
+
+		if( _type == BaseMessage.AppendEntries ):
+			return self.on_append_entries( message )
+		elif( _type == BaseMessage.RequestVote ):
+			return self.on_vote_request( message )
 
 	def on_leader_timeout( self, message ):
 		"""

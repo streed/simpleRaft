@@ -1,6 +1,3 @@
-import time
-import random
-
 from .voter import Voter
 from ..messages.base import BaseMessage
 from ..messages.response import ResponseMessage
@@ -8,21 +5,9 @@ from ..messages.response import ResponseMessage
 class Follower( Voter ):
 
 	def __init__( self, timeout=500 ):
+		Voter.__init__( self )
 		self._timeout = timeout
 		self._timeoutTime = self._nextTimeout()
-		self._last_vote = None
-
-	def on_message( self, message ):
-		_type = message.type
-
-		if( message.term > self._server._currentTerm ):
-			self._server._currentTerm = message.term
-
-		if( _type == BaseMessage.AppendEntries ):
-			return self.on_append_entries( message )
-		elif( _type == BaseMessage.RequestVote ):
-			return self.on_vote_request( message )
-
 
 	def on_append_entries( self, message ):
 		self._timeoutTime = self._nextTimeout()
@@ -52,6 +37,8 @@ class Follower( Voter ):
 				log[data["prevLogIndex"]] = data["prevLogTerm"]
 				self._send_response_message( message )
 				self._server._log = log
+				self._server._lastLogIndex = data["prevLogIndex"]
+				self._server._lastLogValue = data["prevLogTerm"]
 				return self, None
 			#The induction proof held so lets check if the commitIndex 
 			#value is the same as the one on the leader
@@ -65,12 +52,17 @@ class Follower( Voter ):
 					log[data["leaderCommitIndex"]] = data["commitValue"]
 					self._send_response_message( message )
 					self._server._log = log
+					self._server._lastLogIndex = data["leaderCommitIndex"]
+					self._server._lastLogValue = data["commitValue"]
 				else:
 					#The commit index is not out of the range of the log
 					#So we can just append it to the log now.
 					#commitIndex = len( log )
 					log.append( data["commitValue"] )
 					self._server._commitIndex += 1
+					self._server._lastLogIndex = len( log ) - 1
+					self._server._lastLogValue = log[:-1]
+					self._commitIndex = len( log ) - 1
 
 
 			self._send_response_message( message )

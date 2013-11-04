@@ -1,9 +1,12 @@
-
+import  time
 from .state import State
 
 from ..messages.request_vote import RequestVoteResponseMessage
 
 class Voter( State ):
+
+	def __init__( self ):
+		self._last_vote = None
 
 	def on_vote_request( self, message ):
 
