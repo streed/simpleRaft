@@ -19,11 +19,19 @@ class State( object ):
 
 		if( message.term > self._server._currentTerm ):
 			self._server._currentTerm = message.term
+		#Is the messages.term < ours? If so we need to tell
+		#them this so they don't get left behind.
+		elif( message.term < self._server._currentTerm ):
+			self._send_response_message( message, yes=False )
+			return self, None
 
 		if( _type == BaseMessage.AppendEntries ):
 			return self.on_append_entries( message )
 		elif( _type == BaseMessage.RequestVote ):
-			return self.on_vote_request( message )
+			a = self.on_vote_request( message )
+			return a
+		elif( _type == BaseMessage.RequestVoteResponse ):
+			return self.on_vote_received( message )
 
 	def on_leader_timeout( self, message ):
 		"""
@@ -56,5 +64,5 @@ class State( object ):
 		return self._currentTime + random.randrange( self._timeout, 2 * self._timeout )
 
 	def _send_response_message( self, msg, yes=True ):
-		response = ResponseMessage( self._server._name, msg.sender, msg.term, { "response": yes } )
+		response = ResponseMessage( self._server._name, msg.sender, msg.term, { "response": yes, "currentTerm": self._server._currentTerm } )
 		self._server.send_message_response( response )

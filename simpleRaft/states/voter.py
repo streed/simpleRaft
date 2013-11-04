@@ -10,7 +10,7 @@ class Voter( State ):
 
 	def on_vote_request( self, message ):
 
-		if( self._last_vote == None ):
+		if( self._last_vote == None and message.data["lastLogIndex"] >= self._server._lastLogIndex ):
 			self._last_vote = message.sender
 			self._send_vote_response_message( message )
 		else:

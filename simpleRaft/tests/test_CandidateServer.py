@@ -34,3 +34,25 @@ class TestCandidateServer( unittest.TestCase ):
 
 		self.assertEquals( 1, len( self.server._messageBoard._board ) )
 		self.assertEquals( True, self.server._messageBoard.get_message().data["response"] )
+
+	def test_candidate_server_wins_election( self ):
+		board = MemoryBoard()
+		state = Follower()
+		server0 = Server( 0, state, [], board, [] )
+
+		board = MemoryBoard()
+		state = Follower()
+		oserver = Server( 1, state, [], board, [] )
+
+		board = MemoryBoard()
+		state = Candidate()
+		server = Server( 2, state, [], board, [ oserver, server0 ] )
+
+		server0._neighbors.append( server )
+		oserver._neighbors.append( server )
+
+		oserver.on_message( oserver._messageBoard.get_message() )
+		server0.on_message( server0._messageBoard.get_message() )
+
+		server.on_message( server._messageBoard.get_message() )
+		server.on_message( server._messageBoard.get_message() )
