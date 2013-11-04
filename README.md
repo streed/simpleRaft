@@ -1,5 +1,6 @@
 simpleRaft
 ==========
+[![Build Status](https://travis-ci.org/streed/simpleRaft.png?branch=master)](https://travis-ci.org/streed/simpleRaft)
 
 What?
 =====
