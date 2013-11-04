@@ -31,4 +31,5 @@ be written in such a way so as to be easy to implement and plug in a different c
 
 References:
 ==========
-* [https://ramcloud.stanford.edu/wiki/download/attachments/11370504/raft.pdf](In Search of an Understandable Consensus Algorithm)
+* [In Search of an Understandable Consensus Algorithm](https://ramcloud.stanford.edu/wiki/download/attachments/11370504/raft.pdf)
+* [Raft Lecture](http://www.youtube.com/watch?v=YbZ3zDzDnrw)
