@@ -23,7 +23,6 @@ class Candidate( Voter ):
 				return leader, None
 		return self, None
 
-
 	def _start_election( self ):
 		self._server._currentTerm += 1
 		election = RequestVoteMessage( self._server._name, 

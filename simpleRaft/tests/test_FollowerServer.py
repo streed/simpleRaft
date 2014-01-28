@@ -99,3 +99,4 @@ class TestFollowerServer( unittest.TestCase ):
 
 		self.assertEquals( 0, self.server._state._last_vote )
 
+

@@ -132,3 +132,9 @@ class TestCandidateServer( unittest.TestCase ):
             self.assertEquals( type( c0._state ), Candidate )
             self.assertEquals( type( c1._state ), Leader )
 
+        def test_candidate_fails_to_win_election_so_resend_request( self ):
+            pass
+
+        def test_multiple_candidates_fail_to_win_so_resend_requests( self ):
+            pass
+
