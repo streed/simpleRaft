@@ -55,7 +55,7 @@ class TestCandidateServer( unittest.TestCase ):
 		oserver.on_message( oserver._messageBoard.get_message() )
 		server0.on_message( server0._messageBoard.get_message() )
 
-                server._total_nodes = 3
+		server._total_nodes = 3
 
 		server.on_message( server._messageBoard.get_message() )
 		server.on_message( server._messageBoard.get_message() )
