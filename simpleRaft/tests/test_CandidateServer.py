@@ -60,7 +60,7 @@ class TestCandidateServer( unittest.TestCase ):
 		server.on_message( server._messageBoard.get_message() )
 		server.on_message( server._messageBoard.get_message() )
 
-                self.assertEquals( type( server._state ), Leader )
+		self.assertEquals( type( server._state ), Leader )
 
         def test_two_candidates_tie( self ):
             followers = []
