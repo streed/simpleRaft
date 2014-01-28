@@ -62,79 +62,79 @@ class TestCandidateServer( unittest.TestCase ):
 
 		self.assertEquals( type( server._state ), Leader )
 
-        def test_two_candidates_tie( self ):
-            followers = []
+	def test_two_candidates_tie( self ):
+		followers = []
 
-            for i in range( 4 ):
-                board = MemoryBoard()
-                state = Follower()
-                followers.append( Server( i, state, [], board, [] ) )
+		for i in range( 4 ):
+			board = MemoryBoard()
+			state = Follower()
+			followers.append( Server( i, state, [], board, [] ) )
 
-            board = MemoryBoard()
-            state = Candidate()
-            c0 = Server( 5, state, [], board, followers[0:2] )
+		board = MemoryBoard()
+		state = Candidate()
+		c0 = Server( 5, state, [], board, followers[0:2] )
 
-            board = MemoryBoard()
-            state = Candidate()
-            c1 = Server( 6, state, [], board, followers[2:] )
+		board = MemoryBoard()
+		state = Candidate()
+		c1 = Server( 6, state, [], board, followers[2:] )
 
-            for i in range( 2 ):
-                followers[i]._neighbors.append( c0 )
-                followers[i].on_message( followers[i]._messageBoard.get_message() )
+		for i in range( 2 ):
+			followers[i]._neighbors.append( c0 )
+			followers[i].on_message( followers[i]._messageBoard.get_message() )
 
-            for i in range( 2, 4 ):
-                followers[i]._neighbors.append( c1 )
-                followers[i].on_message( followers[i]._messageBoard.get_message() )
+		for i in range( 2, 4 ):
+			followers[i]._neighbors.append( c1 )
+			followers[i].on_message( followers[i]._messageBoard.get_message() )
 
-            c0._total_nodes = 6
-            c1._total_nodes = 6
+		c0._total_nodes = 6
+		c1._total_nodes = 6
 
-            for i in range( 2 ):
-                c0.on_message( c0._messageBoard.get_message() )
-                c1.on_message( c1._messageBoard.get_message() )
-            
-            self.assertEquals( type( c0._state ), Candidate )
-            self.assertEquals( type( c1._state ), Candidate )
+		for i in range( 2 ):
+			c0.on_message( c0._messageBoard.get_message() )
+			c1.on_message( c1._messageBoard.get_message() )
 
-        def test_two_candidates_one_wins( self ):
-            followers = []
+		self.assertEquals( type( c0._state ), Candidate )
+		self.assertEquals( type( c1._state ), Candidate )
 
-            for i in range( 6 ):
-                board = MemoryBoard()
-                state = Follower()
-                followers.append( Server( i, state, [], board, [] ) )
+	def test_two_candidates_one_wins( self ):
+		followers = []
 
-            board = MemoryBoard()
-            state = Candidate()
-            c0 = Server( 7, state, [], board, followers[0:2] )
+		for i in range( 6 ):
+			board = MemoryBoard()
+			state = Follower()
+			followers.append( Server( i, state, [], board, [] ) )
 
-            board = MemoryBoard()
-            state = Candidate()
-            c1 = Server( 8, state, [], board, followers[2:] )
+		board = MemoryBoard()
+		state = Candidate()
+		c0 = Server( 7, state, [], board, followers[0:2] )
 
-            for i in range( 2 ):
-                followers[i]._neighbors.append( c0 )
-                followers[i].on_message( followers[i]._messageBoard.get_message() )
+		board = MemoryBoard()
+		state = Candidate()
+		c1 = Server( 8, state, [], board, followers[2:] )
 
-            for i in range( 2, 6 ):
-                followers[i]._neighbors.append( c1 )
-                followers[i].on_message( followers[i]._messageBoard.get_message() )
+		for i in range( 2 ):
+			followers[i]._neighbors.append( c0 )
+			followers[i].on_message( followers[i]._messageBoard.get_message() )
 
-            c0._total_nodes = 7
-            c1._total_nodes = 7
+		for i in range( 2, 6 ):
+			followers[i]._neighbors.append( c1 )
+			followers[i].on_message( followers[i]._messageBoard.get_message() )
 
-            for i in range( 2 ):
-                c0.on_message( c0._messageBoard.get_message() )
+		c0._total_nodes = 7
+		c1._total_nodes = 7
 
-            for i in range( 4 ):
-                c1.on_message( c1._messageBoard.get_message() )
-            
-            self.assertEquals( type( c0._state ), Candidate )
-            self.assertEquals( type( c1._state ), Leader )
+		for i in range( 2 ):
+			c0.on_message( c0._messageBoard.get_message() )
+			
+		for i in range( 4 ):
+			c1.on_message( c1._messageBoard.get_message() )
 
-        def test_candidate_fails_to_win_election_so_resend_request( self ):
-            pass
+		self.assertEquals( type( c0._state ), Candidate )
+		self.assertEquals( type( c1._state ), Leader )
 
-        def test_multiple_candidates_fail_to_win_so_resend_requests( self ):
-            pass
+	def test_candidate_fails_to_win_election_so_resend_request( self ):
+		pass
+
+	def test_multiple_candidates_fail_to_win_so_resend_requests( self ):
+		pass
 
