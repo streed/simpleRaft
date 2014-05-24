@@ -7,7 +7,7 @@ class Server( object ):
 		self._log = log
 		self._messageBoard = messageBoard
 		self._neighbors = neighbors
-                self._total_nodes = 0
+		self._total_nodes = 0
 
 		self._commitIndex = 0
 		self._currentTerm = 0
