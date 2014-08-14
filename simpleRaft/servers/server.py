@@ -1,3 +1,5 @@
+import zmq
+import threading
 
 class Server( object ):
 
@@ -37,3 +39,38 @@ class Server( object ):
 		state, response = self._state.on_message( message )
 
 		self._state = state
+
+class ZeroMQServer(Server):
+  def __init__(self, name, state, log, messageBoard, neighbors, port=6666):
+    super(Server, self).__init__(name, state, log, messageBoard, neighbors)
+    self._port = 6666
+
+    class SubscribeThread(threading.Thread):
+      def run(thread):
+        context = zmq.Context()
+        socket = context.socket(zmq.SUB)
+        for n in neighbors:
+          socket.connect("tcp://%s:%d" % (n._name. n._port)
+         
+        while True:
+          message = socket.recv()
+          self.on_message(message)
+
+    class PublishThread(threading.Thread):
+      def run(thread):
+        context = zmq.Context()
+        socket = contet.socket(zmq.PUB)
+        socket.bind("tcp://*:%d" % self.port)
+
+        while True:
+          message = self._messageBoard.get_message()
+          socket.send(message)
+ 
+    self.subscribeThread = SubscribeThread()
+    self.publishThread = PublishThread()
+
+    self.subscribeThread.start()
+    self.subscribeThread.daemon = True
+    self.publishThread.start()
+    self.publishThread.daemon = True
+
