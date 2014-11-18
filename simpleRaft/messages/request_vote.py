@@ -1,15 +1,17 @@
 from .base import BaseMessage
 
-class RequestVoteMessage( BaseMessage ):
 
-	_type = BaseMessage.RequestVote
+class RequestVoteMessage(BaseMessage):
 
-	def __init__( self, sender, receiver, term, data ):
-		BaseMessage.__init__( self, sender, receiver, term, data )
+    _type = BaseMessage.RequestVote
 
-class RequestVoteResponseMessage( BaseMessage ):
+    def __init__(self, sender, receiver, term, data):
+        BaseMessage.__init__(self, sender, receiver, term, data)
 
-	_type = BaseMessage.RequestVoteResponse
 
-	def __init__( self, sender, receiver, term, data ):
-		BaseMessage.__init__( self, sender, receiver, term, data )
+class RequestVoteResponseMessage(BaseMessage):
+
+    _type = BaseMessage.RequestVoteResponse
+
+    def __init__(self, sender, receiver, term, data):
+        BaseMessage.__init__(self, sender, receiver, term, data)
