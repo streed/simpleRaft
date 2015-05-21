@@ -52,7 +52,7 @@ class ZeroMQServer(Server):
                 context = zmq.Context()
                 socket = context.socket(zmq.SUB)
                 for n in neighbors:
-                    socket.connect("tcp://%s:%d" % (n._name. n._port))
+                    socket.connect("tcp://%s:%d" % (n._name, n._port))
 
                 while True:
                     message = socket.recv()
