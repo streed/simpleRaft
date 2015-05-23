@@ -71,7 +71,7 @@ class ZeroMQServer(Server):
         self.subscribeThread = SubscribeThread()
         self.publishThread = PublishThread()
 
-        self.subscribeThread.start()
         self.subscribeThread.daemon = True
-        self.publishThread.start()
+        self.subscribeThread.start()
         self.publishThread.daemon = True
+        self.publishThread.start()
