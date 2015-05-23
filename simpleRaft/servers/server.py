@@ -66,6 +66,8 @@ class ZeroMQServer(Server):
 
                 while True:
                     message = self._messageBoard.get_message()
+                    if not message:
+                        continue # sleep wait?
                     socket.send(message)
 
         self.subscribeThread = SubscribeThread()
