@@ -62,7 +62,7 @@ class ZeroMQServer(Server):
             def run(thread):
                 context = zmq.Context()
                 socket = context.socket(zmq.PUB)
-                socket.bind("tcp://*:%d" % self.port)
+                socket.bind("tcp://*:%d" % self._port)
 
                 while True:
                     message = self._messageBoard.get_message()
