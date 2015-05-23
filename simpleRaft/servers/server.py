@@ -44,7 +44,7 @@ class Server(object):
 
 class ZeroMQServer(Server):
     def __init__(self, name, state, log, messageBoard, neighbors, port=6666):
-        super(Server, self).__init__(name, state, log, messageBoard, neighbors)
+        super(ZeroMQServer, self).__init__(name, state, log, messageBoard, neighbors)
         self._port = 6666
 
         class SubscribeThread(threading.Thread):
