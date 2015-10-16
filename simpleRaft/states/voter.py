@@ -1,11 +1,12 @@
 from .state import State
 
 from ..messages.request_vote import RequestVoteResponseMessage
-
+from ..messages.client import ClientFollowerResponse
 
 class Voter(State):
 
-    def __init__(self):
+    def __init__(self, timeout=1.0):
+        super(Voter, self).__init__(timeout=timeout)
         self._last_vote = None
 
     def on_vote_request(self, message):
@@ -25,3 +26,7 @@ class Voter(State):
             msg.term,
             {"response": yes})
         self._server.send_message_response(voteResponse)
+    
+    def on_client_message(self, message):
+        ''' return the message response for the client '''
+        return ClientFollowerResponse(message.sender, self._last_vote)

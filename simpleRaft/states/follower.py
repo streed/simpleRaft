@@ -1,16 +1,21 @@
 from .voter import Voter
-
+import time
 
 class Follower(Voter):
 
-    def __init__(self, timeout=500):
-        Voter.__init__(self)
-        self._timeout = timeout
-        self._timeoutTime = self._nextTimeout()
+    def __init__(self, timeout=1.0):
+        super(Follower, self).__init__(timeout=timeout)
+        self._last_heartbeat = 0
+
+    def on_leader_timeout(self):
+        '''
+        On timeout, we become a Candidate (and trigger initial candidate-role timeout) '''
+        from .candidate import Candidate
+        candidate = Candidate(timeout=self._timeout)
+        candidate.set_server(self._server)
+        return candidate.on_leader_timeout()
 
     def on_append_entries(self, message):
-        self._timeoutTime = self._nextTimeout()
-
         if(message.term < self._server._currentTerm):
             self._send_response_message(message, yes=False)
             return self, None
@@ -84,6 +89,9 @@ class Follower(Voter):
                         self._commitIndex = len(log) - 1
                         self._server._log = log
                         self._send_response_message(message)
+                    else:
+                        self._last_heartbeat = time.time()
+                        self._last_vote = data['leaderId']
 
             self._send_response_message(message)
             return self, None
